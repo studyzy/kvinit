@@ -7,23 +7,54 @@ import (
 
 	"github.com/dgraph-io/badger/v3"
 	"github.com/google/uuid"
+	"github.com/studyzy/kvinit/wal"
 )
 
 func main() {
-	runBadgerTest(nil, func( db *badger.DB) {
+
+	runWal(3 * 1024)
+	return
+	runBadgerTest(nil, func(db *badger.DB) {
 		for i := int64(0); i < 1000000; i++ {
-			key:=GetRandTxId()
-			txnSet( db, []byte(key), []byte(fmt.Sprintf("111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111%d", i)), 0x00)
-			if i%10000==0{
-				fmt.Printf("insert count:%d, current key:%s\n",i,key)
+			key := GetRandTxId()
+			txnSet(db, []byte(key), []byte(fmt.Sprintf("111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111%d", i)), 0x00)
+			if i%10000 == 0 {
+				fmt.Printf("insert count:%d, current key:%s\n", i, key)
 			}
 		}
 	})
 	fmt.Println("all done!")
 }
+func runWal(sizeG int) {
+	walOpt := &wal.Options{
+		NoSync: true,
+	}
+
+	walOpt.SegmentSize = 100 * 1024 * 1024 //100M
+
+	log, err := wal.Open("./waldata", nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	for i := 0; i < sizeG; i++ {
+		for j := 0; j < 10; j++ {
+			data := make([]byte, 100*1025*1025) //大于100M
+			data[0] = byte(i*10 + j)
+			err = log.Write(uint64(i*10+j+1), data)
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+			fmt.Println("write file index:", i*10+j)
+		}
+	}
+	fmt.Println("write done!")
+}
+
 // Opens a badger db and runs a a test on it.
-func runBadgerTest( opts *badger.Options, test func( db *badger.DB)) {
-	dir:="./badger_data"
+func runBadgerTest(opts *badger.Options, test func(db *badger.DB)) {
+	dir := "./badger_data"
 	if opts == nil {
 		opts = new(badger.Options)
 		*opts = getTestOptions(dir)
@@ -37,25 +68,25 @@ func runBadgerTest( opts *badger.Options, test func( db *badger.DB)) {
 		opts.ValueDir = ""
 	}
 	db, err := badger.Open(*opts)
-	if err!=nil{
+	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	defer func() {
 		db.Close()
 	}()
-	test( db)
+	test(db)
 }
 
-func txnSet( kv *badger.DB, key []byte, val []byte, meta byte) {
+func txnSet(kv *badger.DB, key []byte, val []byte, meta byte) {
 	txn := kv.NewTransaction(true)
-	 txn.SetEntry(badger.NewEntry(key, val).WithMeta(meta))
+	txn.SetEntry(badger.NewEntry(key, val).WithMeta(meta))
 	txn.Commit()
 }
 func getTestOptions(dir string) badger.Options {
-	opt :=badger. DefaultOptions(dir).
+	opt := badger.DefaultOptions(dir).
 		WithSyncWrites(false).
-		WithLoggingLevel(badger. WARNING)
+		WithLoggingLevel(badger.WARNING)
 	return opt
 }
 func GetUUIDWithSeed(seed int64) string {

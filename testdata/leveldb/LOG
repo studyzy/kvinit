@@ -1,0 +1,29 @@
+=============== Dec 6, 2021 (CST) ===============
+14:38:13.749304 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+14:38:13.855533 db@open opening
+14:38:13.856570 version@stat F·[] S·0B[] Sc·[]
+14:38:13.866544 db@janitor F·2 G·0
+14:38:13.866590 db@open done T·11.020044ms
+=============== Dec 6, 2021 (CST) ===============
+15:04:01.178886 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:04:01.179902 version@stat F·[] S·0B[] Sc·[]
+15:04:01.179921 db@open opening
+15:04:01.179992 journal@recovery F·1
+15:04:01.180536 journal@recovery recovering @1
+15:04:01.205115 memdb@flush created L0@2 N·21 S·49KiB "SYS..627,v4":"sta..Key,v1"
+15:04:01.206024 version@stat F·[1] S·49KiB[49KiB] Sc·[0.25]
+15:04:01.265498 db@janitor F·3 G·0
+15:04:01.265548 db@open done T·85.614334ms
+15:04:01.267709 db@close closing
+15:04:01.267894 db@close done T·181.167µs
+=============== Dec 6, 2021 (CST) ===============
+15:06:35.744677 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:06:35.745811 version@stat F·[1] S·49KiB[49KiB] Sc·[0.25]
+15:06:35.745840 db@open opening
+15:06:35.745934 journal@recovery F·1
+15:06:35.746648 journal@recovery recovering @3
+15:06:35.747558 version@stat F·[1] S·49KiB[49KiB] Sc·[0.25]
+15:06:35.809253 db@janitor F·3 G·0
+15:06:35.810209 db@open done T·64.352792ms
+15:06:35.810509 db@close closing
+15:06:35.810598 db@close done T·88.292µs
