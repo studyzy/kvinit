@@ -38,15 +38,15 @@ func runWal(sizeG int) {
 		return
 	}
 	for i := 0; i < sizeG; i++ {
-		for j := 0; j < 10; j++ {
-			data := make([]byte, 100*1025*1025) //大于100M
-			data[0] = byte(i*10 + j)
-			err = log.Write(uint64(i*10+j+1), data)
+		for j := 0; j < 100; j++ {
+			data := make([]byte, 9*1024*1024) //9M
+			data[0] = byte(i*100 + j)
+			err = log.Write(uint64(i*100+j+1), data)
 			if err != nil {
 				fmt.Println(err.Error())
 				return
 			}
-			fmt.Println("write file index:", i*10+j)
+			fmt.Println("write file index:", i*100+j)
 		}
 	}
 	fmt.Println("write done!")
