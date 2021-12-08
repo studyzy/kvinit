@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"time"
 
 	"github.com/dgraph-io/badger/v3"
 	"github.com/google/uuid"
@@ -12,6 +13,8 @@ import (
 
 func main() {
 
+	readWal(100)
+	return
 	runWal(3 * 1024)
 	return
 	runBadgerTest(nil, func(db *badger.DB) {
@@ -50,6 +53,26 @@ func runWal(sizeG int) {
 		}
 	}
 	fmt.Println("write done!")
+}
+func readWal(h uint64) {
+	walOpt := &wal.Options{
+		NoSync: true,
+	}
+
+	walOpt.SegmentSize = 100 * 1024 * 1024 //100M
+
+	log, err := wal.Open("./waldata", nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	start := time.Now()
+	data, err := log.Read(h)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Println("Read wal height:", h, " get data length:", len(data), "cost:", time.Since(start))
 }
 
 // Opens a badger db and runs a a test on it.
