@@ -13,7 +13,7 @@ import (
 
 func main() {
 
-	readWal(100)
+	readWal(100, 200)
 	return
 	runWal(3 * 1024)
 	return
@@ -54,7 +54,7 @@ func runWal(sizeG int) {
 	}
 	fmt.Println("write done!")
 }
-func readWal(h uint64) {
+func readWal(h1, h2 uint64) {
 	walOpt := &wal.Options{
 		NoSync: true,
 	}
@@ -67,12 +67,14 @@ func readWal(h uint64) {
 		return
 	}
 	start := time.Now()
-	data, err := log.Read(h)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
+	for i := h1; i <= h2; i++ {
+		data, err := log.Read(i)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		fmt.Println("Read wal height:", i, " get data length:", len(data), "cost:", time.Since(start))
 	}
-	fmt.Println("Read wal height:", h, " get data length:", len(data), "cost:", time.Since(start))
 }
 
 // Opens a badger db and runs a a test on it.
